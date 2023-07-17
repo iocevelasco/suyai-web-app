@@ -13,11 +13,12 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "cypress": "^12.11.0",
-    "firebase": "^9.17.2",
+    "firebase": "^9.23.0",
     "formik": "^2.2.9",
     "framer-motion": "^10.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.10",
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.2",
@@ -34,11 +35,19 @@
     "yup": "^1.1.1"
   },
   "scripts": {
-    "dev": "vite",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite --mode localhost",
+    "build": "yarn vite build",
+    "preview": "vite preview",
+    "prettier": "prettier --write \"**/*.{js,jsx,json,md,yml}\"",
+    "prettier:check": "npx prettier --check .",
+    "lint": "eslint ./ --fix",
+    "lint:check": "eslint ./",
+    "check-types": "tsc --noemit",
+    "test": "jest --maxWorkers=25%",
+    "test:watch": "jest --watch",
+    "cy:headless": "cypress run",
+    "cy": "cypress open",
+    "cy:ci": "start-server-and-test 'yarn dev' http-get://localhost:3000 'yarn cy:headless'"
   },
   "eslintConfig": {
     "extends": [

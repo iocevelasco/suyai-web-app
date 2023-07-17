@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react'
 import { FormikProvider, useFormik } from 'formik'
 import { Link } from 'react-router-dom'
-//import LoginInput from '../../Components/LoginInput/LoginInput'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import LadingLayout from 'ui/Layouts/LadingLayout'
+import { auth } from 'utils/firebase'
 import { LoginButtonGoogleStyled, LoginContainerStyled, FormStyled } from './Login.style'
-import { initialValues, LoginMessage, LoginErrorMessages } from './Login.utils'
-import { signInUser } from 'services/Firebase/firebase-utils'
+import { initialValues, LoginMessage } from './Login.utils'
 import TextField from 'ui/components/Inputs/TextField'
 import PasswordInput from 'ui/components/Inputs/PasswordInput'
 import Button from 'ui/components/Button'
@@ -16,19 +16,18 @@ import { useAuth } from 'utils/hooks/useAuth'
 const Login = () => {
   const [_, { login }] = useAuth()
   const [errorMessage, setErrorMessage] = useState('')
+
   const handleSubmit = useCallback(async (values) => {
-    try {
-      const response = await signInUser(values.email, values.password)
-      // console.log({ response })
-      login('1234')
-    } catch (error) {
-      if ('auth/wrong-password' in error.code) {
-        return setErrorMessage(LoginErrorMessages.WrongPassword)
-      }
-      if ('auth/user-not-found' in error.code) {
-        return setErrorMessage(LoginErrorMessages.NotFoundUser)
-      }
-    }
+    console.log({ ...values })
+    const { email, password } = values
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        login()
+        console.log(userCredential)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }, [])
 
   const formik = useFormik({
@@ -70,7 +69,7 @@ const Login = () => {
               />
               {LoginMessage.SubmitText}
             </LoginButtonGoogleStyled>
-            <Link to="/register">
+            <Link to="/signup">
               <Typography>{LoginMessage.NewAccountLabelText}</Typography>
             </Link>
           </FormStyled>

@@ -1,21 +1,13 @@
 import { Grid, CircularProgress } from '@mui/material'
 import { lazy, Suspense } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { OriginPathnameKey } from 'utils/hooks/useAuth'
+import { Routes, Route } from 'react-router-dom'
 import routes from './routes'
 
 const LadingPage = lazy(() => import('ui/pages/Home'))
 const LoginPage = lazy(() => import('ui/pages/Login'))
+const SignUpPage = lazy(() => import('ui/pages/SignUp'))
 
-function NavigateWithState() {
-  const location = useLocation()
-
-  return (
-    <Navigate to={routes.root.path} replace state={{ [OriginPathnameKey]: location.pathname }} />
-  )
-}
-
-function UnAuthanticatedApp() {
+function UnAuthenticatedApp() {
   return (
     <Suspense
       fallback={
@@ -33,9 +25,10 @@ function UnAuthanticatedApp() {
       <Routes>
         <Route path={routes.root.path} element={<LadingPage />} />
         <Route path={routes.login.path} element={<LoginPage />} />
+        <Route path={routes.signup.path} element={<SignUpPage />} />
       </Routes>
     </Suspense>
   )
 }
 
-export default UnAuthanticatedApp
+export default UnAuthenticatedApp

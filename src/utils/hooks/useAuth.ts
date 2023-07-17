@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { userSessionProps } from 'services/api/Authentication'
 import routes from 'routes'
 import { useAppDispatch, useAppSelector } from 'services/store'
 import { selectIsAuth, userAuth } from 'services/store/slices/userSlice'
 import { authTokenKey } from 'utils/constants/tokens'
-
+import { auth } from 'services/api'
+import { onAuthStateChanged } from 'firebase/auth'
 export const OriginPathnameKey = 'originPathname'
-
 export type LocationState = {
   state?: {
     [OriginPathnameKey]?: string
@@ -21,12 +22,17 @@ export const useAuth = () => {
   const navigate = useNavigate()
   const actions = useMemo(
     () => ({
-      login: (token: string) => {
-        localStorage.setItem(authTokenKey, token)
-        dispatch(userAuth(true))
-        navigate(routes.dashboard.path)
-        if (state?.[OriginPathnameKey]) {
-        }
+      login: () => {
+        const user = userSessionProps()
+        console.log({ user })
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log({ user })
+            return user
+          }
+          return null
+        })
+        //dispatch(userAuth(true))
       },
       logout: () => {
         localStorage.removeItem(authTokenKey)
